@@ -23,5 +23,14 @@ order by year_game;
 
 4. написать cte показывающее тоже самое
 
+with years as (
+    select year_game, sum(points)
+	from statistic
+	group by year_game
+   )
+select *
+from years
+order by year_game;
+
 5. используя функцию LAG вывести кол-во очков по всем игрокам за текущий код и за предыдущий.
 
