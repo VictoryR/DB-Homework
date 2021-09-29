@@ -34,3 +34,9 @@ from years
 order by year_game;
 
 5. используя функцию LAG вывести кол-во очков по всем игрокам за текущий код и за предыдущий.
+
+select lag(sum(points)) over (order by year_game desc) as lag_points,
+lag(year_game) over (order by year_game desc) as lag_year
+from statistic
+group by year_game
+limit 2  offset 1;
