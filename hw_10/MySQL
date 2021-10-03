@@ -1,0 +1,51 @@
+Добавляем в таблицу поле info тип JSON, для хранения необязательной информации: тип соревнований, инфо о спонсорах и т.п.
+
+CREATE TABLE tournaments (
+	id int PRIMARY KEY AUTO_INCREMENT,
+	name varchar(45) NOT NULL,
+	code varchar(20) NULL,
+	year year NULL,
+  info JSON NULL
+);
+
+
+Вставляем строки в таблицу
+
+insert into tournaments (name, code, year, info)
+values ('Турнир 7', null, '2019', '{"type": "Тип 1", "sponsor_name": "Спонсор 9"}'), 
+('Турнир 8', 't_8', '2019', '{"type": "Тип2"}');
+
+
+-- JSON insert
+UPDATE tournaments
+SET info = JSON_INSERT(
+    info ,
+    '$.sponsor_name' ,
+    'Спонсор 20',
+    '$.sponsor_phone',
+    '89999999999'
+)
+WHERE
+    id = 20; 
+    
+   
+   
+-- JSON update
+UPDATE tournaments
+SET info = JSON_REPLACE(
+    info ,
+    '$.sponsor_name' ,
+    'Спонсор НОВЫЙ'
+)
+WHERE
+    id = 20;
+    
+-- JSON select
+Получим все записи о соревнованиях по типу
+
+SELECT
+    *
+FROM
+    tournaments
+WHERE
+	JSON_EXTRACT(info , '$.type') = 'Регби-7';
