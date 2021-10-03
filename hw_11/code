@@ -1,0 +1,48 @@
+1. Напишите запрос по своей базе с inner join
+
+Все матчи с командами из Москвы
+select * from matches
+join cities on matches.rival_city_id = cities.id
+where cities.name = 'Москва';
+
+Количество всех выигранных матчей с командами из Москвы
+select count(*) from matches
+join cities on matches.rival_city_id = cities.id
+where matches.rival_score < matches.score and cities.name = 'Москва';
+
+Количество всех проигранных матчей с командами из Москвы
+select count(*) from matches
+join cities on matches.rival_city_id = cities.id
+where matches.rival_score > matches.score and cities.name = 'Москва';
+
+2. Напишите запрос по своей базе с left join
+
+Список матчей в 2021 году и будущих годах
+
+select rival_name 'Соперник', DATE_FORMAT(matches.match_date,'%d.%m.%Y') 'Дата матча', cities.name 'Город соперника', tournaments.name 'Турнир'
+from matches
+left join cities on matches.rival_city_id = cities.id
+join tournaments on matches.tournament_id = tournaments.id
+where year(matches.match_date) > 2020
+
+
+3. Напишите 5 запросов с WHERE с использованием разных операторов, опишите для чего вам в проекте нужна такая выборка
+ 
+Количество  выигранных матчей
+select count(*) from matches
+where matches.rival_score < matches.score;
+
+Количество проигранных матчей
+select count(*) from matches
+where matches.rival_score > matches.score;
+
+Общее количество матчей с определенной командой
+select count(*) from matches
+join cities on matches.rival_city_id = cities.id
+where rival_name = 'Команда 5';
+
+Игроки на позиции 1 
+select * from players
+where role_id = 1;
+
+
