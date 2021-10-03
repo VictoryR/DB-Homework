@@ -45,4 +45,8 @@ where rival_name = 'Команда 5';
 select * from players
 where role_id = 1;
 
+Количество матчей за период
+select count(*) 
+from matches
+where year(matches.match_date) < 2021 and year(matches.match_date) > 2017
 
