@@ -1,0 +1,93 @@
+1. Создать индекс к какой-либо из таблиц вашей БД
+
+create index pl_id_index on trainings.players_on_trainings (player_id);
+
+2. Прислать текстом результат команды explain, в которой используется данный индекс
+
+explain 
+select pl.player_id as player, 
+	concat_ws(' ', players.last_name, players.name) as "Игрок", 
+	count(pl.training_id) as "Количество тренировок"
+from trainings.players_on_trainings as pl
+join team.players  on players.id = pl.player_id
+where pl.player_id = 2
+group by player, players.last_name, players.name;
+
+
+"HashAggregate  (cost=175.85..176.19 rows=27 width=71)"
+"  Group Key: pl.player_id, players.last_name, players.name"
+"  ->  Nested Loop  (cost=19.26..166.85 rows=900 width=35)"
+"        ->  Seq Scan on players  (cost=0.00..1.34 rows=1 width=31)"
+"              Filter: (id = 2)"
+"        ->  Bitmap Heap Scan on players_on_trainings pl  (cost=19.26..156.51 rows=900 width=8)"
+"              Recheck Cond: (player_id = 2)"
+"              ->  Bitmap Index Scan on pl_id_index  (cost=0.00..19.04 rows=900 width=0)"
+"                    Index Cond: (player_id = 2)"
+
+
+3. Реализовать индекс для полнотекстового поиска
+
+Создаем тестовую таблицу 
+create table test_players (id integer, first_name text, last_name text);
+
+insert into test_players
+	select s.id, 
+	array_to_string(array(select substr('абвгдежзиклмнопрстуфхцчшщэюя',(((random() + (s.id + 0.5) % s.id)*27+1)::integer),1) from generate_series(1,15)),''),
+	array_to_string(array(select substr('абвгдежзиклмнопрстуфхцчшщэюя',(((random() + (s.id + 0.5) % s.id)*27+1)::integer),1) from generate_series(1,15)),'')
+	from  generate_series(1, 500000) as s(id);
+	
+
+create index name_index on test_players (first_name);
+
+explain
+select * from test_players
+where test_players.first_name = 'уцют'
+
+"Bitmap Heap Scan on test_players  (cost=4.47..27.80 rows=6 width=25)"
+"  Recheck Cond: (first_name = 'уцют'::text)"
+"  ->  Bitmap Index Scan on name_index  (cost=0.00..4.47 rows=6 width=0)"
+"        Index Cond: (first_name = 'уцют'::text)"
+
+4. Реализовать индекс на часть таблицы или индекс на поле с функцией
+
+Индекс на часть таблицы
+create index tr_date_index on trainings.trainings (treaining_date) where treaining_date > '01.01.2021';
+
+explain 
+select  
+	concat_ws(' ', team_pl.last_name, team_pl.name) as "Игрок", 
+	count(pl_tr.training_id) as "Количество тренировок"
+from trainings.players_on_trainings as pl_tr
+join trainings.trainings as tr_tr on tr_tr.id = pl_tr.training_id
+join team.players as team_pl on team_pl.id = pl_tr.player_id
+where tr_tr.treaining_date > '01.01.2021' AND pl_tr.player_id = 2
+group by pl_tr.player_id, team_pl.last_name, team_pl.name;
+
+"HashAggregate  (cost=180.09..180.43 rows=27 width=71)"
+"  Group Key: pl_tr.player_id, team_pl.last_name, team_pl.name"
+"  ->  Nested Loop  (cost=36.85..178.95 rows=114 width=35)"
+"        ->  Seq Scan on players team_pl  (cost=0.00..1.34 rows=1 width=31)"
+"              Filter: (id = 2)"
+"        ->  Hash Join  (cost=36.85..176.48 rows=114 width=8)"
+"              Hash Cond: (pl_tr.training_id = tr_tr.id)"
+"              ->  Bitmap Heap Scan on players_on_trainings pl_tr  (cost=19.26..156.51 rows=900 width=8)"
+"                    Recheck Cond: (player_id = 2)"
+"                    ->  Bitmap Index Scan on pl_id_index  (cost=0.00..19.04 rows=900 width=0)"
+"                          Index Cond: (player_id = 2)"
+"              ->  Hash  (cost=16.17..16.17 rows=114 width=4)"
+"                    ->  Bitmap Heap Scan on trainings tr_tr  (cost=8.74..16.17 rows=114 width=4)"
+"                          Recheck Cond: (treaining_date > '2021-01-01 00:00:00'::timestamp without time zone)"
+"                          ->  Bitmap Index Scan on tr_date_index  (cost=0.00..8.71 rows=114 width=0)"
+
+
+
+5. Создать индекс на несколько полей
+
+create index names_last_name_index on test_players (first_name, last_name);
+
+explain
+select * from test_players
+where test_players.first_name = 'уцю' AND test_players.last_name = 'фя'
+
+"Index Scan using names_last_name_index on test_players  (cost=0.42..8.44 rows=1 width=25)"
+"  Index Cond: ((first_name = 'уцю'::text) AND (last_name = 'фя'::text))"
