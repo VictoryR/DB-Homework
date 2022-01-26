@@ -77,4 +77,3 @@
     USING team.roles roles
     WHERE roles.id = players.role_id AND roles.code = 'forward'
     RETURNING players.ID, concat_ws(' ', players.last_name, players.name);
-
