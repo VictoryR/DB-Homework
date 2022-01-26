@@ -2,8 +2,8 @@
 
 Выберем всех игроков по имени Александр
 
-  select * from team.players
-  where name like 'Александр';
+    select * from team.players
+    where name like 'Александр';
 
 ![5_1](images/5_1.png)
 
