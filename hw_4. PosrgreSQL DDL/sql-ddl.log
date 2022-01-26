@@ -1,0 +1,191 @@
+-- team
+CREATE TABLE team.roles (
+	id int PRIMARY KEY,
+	name varchar(20) NOT NULL,
+	code varchar(20)
+);
+
+CREATE TABLE team.teams (
+	id int PRIMARY KEY,
+	name varchar(20) NOT NULL,
+	code varchar(20)
+);
+
+CREATE TABLE IF NOT EXISTS team.players (
+	id int NOT NULL,
+	name varchar(45) NOT NULL,
+	second_name varchar(45),
+	last_name varchar(45) NOT NULL,
+	date_of_birth date NOT NULL,
+	height varchar(5),
+	role_id int NOT NULL,
+	team_id int NOT NULL,
+	weight int,
+	debut_date date,
+	PRIMARY KEY (id),
+	FOREIGN KEY (role_id)
+		REFERENCES team.roles (id),
+	FOREIGN KEY (team_id)
+		REFERENCES team.teams(id)
+);
+
+ALTER TABLE team.players
+	ADD COLUMN email VARCHAR(50) UNIQUE;
+	
+ALTER TABLE team.players
+	ADD COLUMN mobile_phone VARCHAR(11) UNIQUE;
+	
+ALTER TABLE team.players
+	ALTER COLUMN debut_date SET NOT NULL;
+
+ALTER TABLE team.players 
+	ADD CONSTRAINT date_check 
+	CHECK (
+		date_of_birth > '1900-01-01'
+		AND debut_date > date_of_birth
+	);
+	
+CREATE TABLE team.trainers (
+	id int PRIMARY KEY,
+	position  varchar(50) NOT NULL,
+	name varchar(45) NOT NULL,
+	second_name varchar(45),
+	last_name varchar(45) NOT NULL,
+	team_id int,
+	FOREIGN KEY (team_id)
+		REFERENCES team.teams(id)
+);
+
+
+-- matches
+CREATE TABLE matches.goals (
+	id int PRIMARY KEY,
+	name varchar(45) NOT NULL,
+	code varchar(20) NOT NULL,
+	description char NOT NULL
+);
+
+CREATE TABLE matches.fouls (
+	id int PRIMARY KEY,
+	name varchar(45) NOT NULL,
+	code varchar(20) NOT NULL,
+	description varchar(250) NOT NULL
+);
+
+CREATE TABLE matches.tournaments (
+	id int PRIMARY KEY,
+	name varchar(45) NOT NULL,
+	code varchar(20) NOT NULL,
+	year date NOT NULL
+);
+
+CREATE TABLE matches.matches (
+	id int PRIMARY KEY NOT NULL,
+	rival_name varchar(45) NOT NULL,
+	rival_city_id int,
+	tournament_id int NOT NULL,
+	date timestamp NOT NULL,
+	rival_score int NOT NULL,
+	score int NOT NULL,
+	field_id int,
+	type varchar(45),
+	FOREIGN KEY (rival_city_id)
+		REFERENCES fields.cities(id),
+	FOREIGN KEY (tournament_id)
+		REFERENCES matches.tournaments(id),
+	FOREIGN KEY (field_id)
+		REFERENCES fields.fields(id)
+);
+
+CREATE TABLE matches.participation (
+	id int PRIMARY KEY NOT NULL,
+	match_id int NOT NULL,
+	player_id int NOT NULL,
+	FOREIGN KEY (match_id)
+		REFERENCES matches.matches,
+	FOREIGN KEY (player_id)
+		REFERENCES team.players
+);
+
+ALTER TABLE matches.participation
+	ADD CONSTRAINT unique_participation
+	UNIQUE(match_id, player_id);
+	
+CREATE TABLE matches.participants_goals (
+	id int PRIMARY KEY NOT NULL,
+	participation_id int NOT NULL,
+	goal_id int NOT NULL,
+	count int NOT NULL,
+	FOREIGN KEY (participation_id)
+		REFERENCES matches.participation,
+	FOREIGN KEY (goal_id)
+		REFERENCES matches.goals
+);
+
+CREATE TABLE matches.participants_fouls (
+	id int PRIMARY KEY NOT NULL,
+	participation_id int NOT NULL,
+	foul_id int NOT NULL,
+	count int NOT NULL,
+	FOREIGN KEY (participation_id)
+		REFERENCES matches.participation,
+	FOREIGN KEY (foul_id)
+		REFERENCES matches.fouls
+);
+
+-- fields
+
+CREATE TABLE fields.cities (
+	id int PRIMARY KEY,
+	name varchar(45) NOT NULL,
+	code varchar(45) NOT NULL
+);
+
+CREATE TABLE fields.fields (
+	id int PRIMARY KEY,
+	name varchar(45) NOT NULL,
+	address varchar(200) NOT NULL,
+	city_id int NOT NULL,
+	FOREIGN KEY (city_id)
+		REFERENCES fields.cities(id)
+);
+
+
+-- trainings
+CREATE TABLE trainings.trainings (
+	id int PRIMARY KEY,
+	treaining_date timestamp NOT NULL,
+	comment varchar(100),
+	field_id int NOT NULL,
+	FOREIGN KEY (field_id)
+		REFERENCES fields.fields(id)
+);
+
+CREATE TABLE trainings.players_on_trainings (
+	id int PRIMARY KEY NOT NULL,
+	training_id int NOT NULL,
+	player_id int NOT NULL,
+	FOREIGN KEY (training_id)
+		REFERENCES trainings.trainings(id),
+	FOREIGN KEY (player_id)
+		REFERENCES team.players(id)
+);
+
+ALTER TABLE trainings.players_on_trainings
+	ADD CONSTRAINT unique_training
+	UNIQUE(training_id, player_id);
+
+CREATE TABLE trainings.trainers_on_trainings (
+	id int PRIMARY KEY NOT NULL,
+	training_id int NOT NULL,
+	trainer_id int NOT NULL,
+	FOREIGN KEY (training_id)
+		REFERENCES trainings.trainings(id),
+	FOREIGN KEY (trainer_id)
+		REFERENCES team.trainers(id)
+);
+
+ALTER TABLE trainings.trainers_on_trainings
+	ADD CONSTRAINT unique_trainer_training
+	UNIQUE(training_id, trainer_id);
+
