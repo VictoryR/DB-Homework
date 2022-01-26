@@ -9,6 +9,7 @@
 
 2.  **Напишите запрос по своей базе с использованием LEFT JOIN и INNER JOIN, как порядок соединений в FROM влияет на результат? Почему?**
 
+
     select 
     players.id "ID",
     concat_ws(' ', players.last_name, players.name, players.second_name) as "ФИО игрока",
@@ -18,6 +19,7 @@
     inner join team.roles roles on players.role_id = roles.id
     inner join team.teams teams on players.team_id = teams.id
     order by players.id asc;
+
 
 ![5_2](images/5_2.png)
 
