@@ -9,6 +9,9 @@
 
 2.  **Напишите запрос по своей базе с использованием LEFT JOIN и INNER JOIN, как порядок соединений в FROM влияет на результат? Почему?**
 
+test 
+
+
     select * from team.players
     where name like 'Александр';
 
