@@ -8,7 +8,7 @@
 ![5_1](images/5_1.png)
 
 2.  **Напишите запрос по своей базе с использованием LEFT JOIN и INNER JOIN, как порядок соединений в FROM влияет на результат? Почему?**
-
+ 
     select 
     players.id "ID",
     concat_ws(' ', players.last_name, players.name, players.second_name) as "ФИО игрока",
