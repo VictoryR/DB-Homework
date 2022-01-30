@@ -1,5 +1,6 @@
     Посчитаем количество игроков по дням рождениям по месяцам и годам.
     
+    
     select 
         year(p.date_of_birth) birthYear,
         month(p.date_of_birth) birthMonth,
