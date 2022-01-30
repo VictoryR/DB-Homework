@@ -27,7 +27,7 @@
         month(p.date_of_birth) birthMonth,
         count(p.id) as 'Количество игроков'
     from players_new  p
-    group by year(p.date_of_birth), month(p.date_of_birth) with rollup
+    group by year(p.date_of_birth), month(p.date_of_birth)
     having birthYear > 1999;
 
 Добавим grouping
@@ -44,17 +44,21 @@
 
     select 
         p.role_id roleId,
-        max(p.height) as playerHeight
+        max(p.height) as playerHeight,
+        r.name as 'Позиция'
     from players_new  p
-    group by p.role_id;
+    join roles r on p.role_id = r.id
+    group by p.role_id, r.name;
 
 Найдем минимальный вес игроков на каждой позиции
 
     select 
         p.role_id roleId,
-        min(p.weight) as playerWeight
+        min(p.weight) as playerWeight,
+        r.name as 'Позиция'
     from players_new  p
-    group by p.role_id;
+    join roles r on p.role_id = r.id
+    group by p.role_id, r.name;
    
     
     
