@@ -9,6 +9,7 @@
     group by year(p.date_of_birth), month(p.date_of_birth)
     order by birthYear, birthMonth;
 
+![количество игроков по месяцу и году рождения](images/14_1.png)
 
 Добавим rollup
 
@@ -19,8 +20,10 @@
     from players_new  p
     group by year(p.date_of_birth), month(p.date_of_birth) with rollup
     order by birthYear, birthMonth;
+    
+![rollup](images/14_2.png)
 
-Добавим having, выберем игроков моложе 2000 года рождения
+Добавим having, выберем игроков моложе 1999 года рождения
 
     select 
         year(p.date_of_birth) birthYear,
@@ -29,6 +32,8 @@
     from players_new  p
     group by year(p.date_of_birth), month(p.date_of_birth)
     having birthYear > 1999;
+
+![having](images/14_3.png)
 
 Добавим grouping
 
@@ -40,6 +45,8 @@
     group by year(p.date_of_birth), month(p.date_of_birth) with rollup
     order by birthYear desc, birthMonth desc;
 
+![grouping](images/14_4.png)
+
 Найдем максимальный рост игроков на каждой позиции
 
     select 
@@ -49,6 +56,8 @@
     from players_new  p
     join roles r on p.role_id = r.id
     group by p.role_id, r.name;
+
+![max](images/14_5.png)
 
 Найдем минимальный вес игроков на каждой позиции
 
@@ -60,8 +69,12 @@
     join roles r on p.role_id = r.id
     group by p.role_id, r.name;
 
+![min](images/14_6.png)
 
-В таблице mathes приведена статистика по проведенным матчам. Посчитаем количество проигранных матчей с каждой командой в таблице.
+В таблице mathes приведена статистика по проведенным матчам. 
+![matches](images/14_8.png)
+
+Посчитаем количество проигранных матчей с каждой командой в таблице и общее число очков с каждой стороны за все время.
 
     select 
         m.rival_name as rivalName,
@@ -74,7 +87,8 @@
     from matches_new m
     group by rivalName
     order by lostMatches desc;
-    
+
+![case](images/14_7.png)
     
     
     
