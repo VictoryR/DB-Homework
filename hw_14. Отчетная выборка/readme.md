@@ -59,7 +59,21 @@
     from players_new  p
     join roles r on p.role_id = r.id
     group by p.role_id, r.name;
-   
+
+
+В таблице mathes приведена статистика по проведенным матчам. Посчитаем количество проигранных матчей с каждой командой в таблице.
+
+    select 
+        m.rival_name as rivalName,
+        count(
+        CASE 
+                WHEN m.rival_score > m.score THEN  m.id 
+            END) as lostMatches,
+        sum(m.rival_score) as 'Общее число очков соперника',
+        sum(m.score) as 'Число очков команды'
+    from matches_new m
+    group by rivalName
+    order by lostMatches desc;
     
     
     
