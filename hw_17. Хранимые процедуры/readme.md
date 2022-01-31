@@ -21,8 +21,11 @@
     
     
     call get_statistic('2020', 16);
+    
+![количество игроков по месяцу и году рождения](images/17_4.png)
 
 
+Еще одна процедура
 
     delimiter $$
     use `otus`$$
@@ -50,4 +53,31 @@
     delimiter ;
     
     call get_statistic_new('2020', 16, 'score', 'desc', 3 , 1);
+
+![количество игроков по месяцу и году рождения](images/17_3.png)
+
+    DELIMITER $$
+    USE `otus`$$
+    CREATE PROCEDURE get_statistic_2 (IN dateStart date, IN dateEnd date, IN groupBy char(20))
+    BEGIN
+        SET @query = CONCAT('
+            SELECT
+                m.',groupBy,' AS ',groupBy,',
+                COUNT(m.id) AS "Количество матчей"
+            FROM matches_new m
+            WHERE m.match_date > "',dateStart,'" and m.match_date < "',dateEnd,'"
+            GROUP BY m.',groupBy,';
+        ');
+    PREPARE SQL_QUERY from @query;
+    EXECUTE SQL_QUERY;
+    END$$
+    DELIMITER ;
+
+    call get_statistic_2('2019-01-01', '2020-01-01', 'tournament_id');
+
+![количество игроков по месяцу и году рождения](images/17_1.png)
+
+    call get_statistic_2('2020-01-01', '2021-01-01', 'rival_city_id');
+
+![количество игроков по месяцу и году рождения](images/17_2.png)
 
