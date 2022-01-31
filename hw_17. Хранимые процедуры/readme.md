@@ -76,7 +76,7 @@
 
     DELIMITER $$
     USE `otus`$$
-    CREATE PROCEDURE get_statistic_2 (IN dateStart date, IN dateEnd date, IN groupBy char(20))
+    CREATE PROCEDURE get_statistic_manager (IN dateStart date, IN dateEnd date, IN groupBy char(20))
     BEGIN
         SET @query = CONCAT('
             SELECT
@@ -93,17 +93,17 @@
     
 Количество матчей за период с группировкой по турнирам.
 
-    call get_statistic_2('2019-01-01', '2020-01-01', 'tournament_id');
+    call get_statistic_manager('2019-01-01', '2020-01-01', 'tournament_id');
 
 ![get_statistic_2](images/17_1.png)
 
 Количество матчей за период с группировкой по городу команды соперника.
 
-    call get_statistic_2('2020-01-01', '2021-01-01', 'rival_city_id');
+    call get_statistic_manager('2020-01-01', '2021-01-01', 'rival_city_id');
 
 ![get_statistic_2](images/17_2.png)
 
 Даем права на запуск процедуры пользователю manager
 
-    GRANT EXECUTE ON PROCEDURE get_statistic_test_2  TO manager;
+    GRANT EXECUTE ON PROCEDURE get_statistic_manager  TO manager;
 
