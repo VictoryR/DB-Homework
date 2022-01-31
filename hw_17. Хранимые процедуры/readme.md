@@ -1,4 +1,9 @@
-Создадим процедуру get_statistic. 
+Создаем роли
+
+    CREATE ROLE IF NOT EXISTS clientUser;
+    CREATE ROLE IF NOT EXISTS manager;
+
+Создадим процедуру get_statistic - количество проигранных матчей с каждой командой в таблице и общее число очков с каждой стороны за определенный год (matchYear) и в определенных соревнованиях (matchTournament).
 
     DELIMITER $$
     USE `otus`$$
@@ -22,10 +27,10 @@
     
     call get_statistic('2020', 16);
     
-![количество игроков по месяцу и году рождения](images/17_4.png)
+![get_statistic](images/17_4.png)
 
 
-Еще одна процедура
+Добавим сортировку по входящему параметру и постраничную навигацию.
 
     delimiter $$
     use `otus`$$
@@ -54,7 +59,14 @@
     
     call get_statistic_new('2020', 16, 'score', 'desc', 3 , 1);
 
-![количество игроков по месяцу и году рождения](images/17_3.png)
+Даем права на запуск процедуры пользователю  clientUser
+
+![get_statistic_new](images/17_3.png)
+
+    GRANT EXECUTE ON PROCEDURE get_statistic_new  TO clientUser;
+
+
+Посчитаем количество сыгранных матчей за разные периоды и с различными уровнями группировки.
 
     DELIMITER $$
     USE `otus`$$
@@ -72,12 +84,20 @@
     EXECUTE SQL_QUERY;
     END$$
     DELIMITER ;
+    
+Количество матчей за период с группировкой по турнирам.
 
     call get_statistic_2('2019-01-01', '2020-01-01', 'tournament_id');
 
-![количество игроков по месяцу и году рождения](images/17_1.png)
+![get_statistic_2](images/17_1.png)
+
+Количество матчей за период с группировкой по городу команды соперника.
 
     call get_statistic_2('2020-01-01', '2021-01-01', 'rival_city_id');
 
-![количество игроков по месяцу и году рождения](images/17_2.png)
+![get_statistic_2](images/17_2.png)
+
+Даем права на запуск процедуры пользователю manager
+
+    GRANT EXECUTE ON PROCEDURE get_statistic_test_2  TO manager;
 
