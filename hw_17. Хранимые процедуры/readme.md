@@ -9,18 +9,18 @@
     USE `otus`$$
     CREATE PROCEDURE get_statistic (IN matchYear char(4), IN matchTournament int)
     BEGIN
-        select 
-            m.rival_name as rivalName,
-            count(
+        SELECT 
+            m.rival_name AS rivalName,
+            COUNT(
             CASE 
                     WHEN m.rival_score > m.score THEN  m.id 
                 END) as lostMatches,
-            sum(m.rival_score) as 'Общее число очков соперника',
-            sum(m.score) as 'Число очков команды'
-        from matches_new m
-        where year(m.match_date) = matchYear and m.tournament_id = matchTournament
-        group by rivalName
-        order by lostMatches desc;
+            SUM(m.rival_score) as 'Общее число очков соперника',
+            SUM(m.score) as 'Число очков команды'
+        FROM matches_new m
+        WHERE YEAR(m.match_date) = matchYear and m.tournament_id = matchTournament
+        GROUP BY rivalName
+        ORDER BY lostMatches DESC;
     END$$
     DELIMITER ;
     
@@ -34,16 +34,22 @@
 
     delimiter $$
     use `otus`$$
-    create procedure get_statistic_new (in matchYear char(4), IN matchTournament int, in orderBy char(20), in orderSort char(4), in pagerOffer int,
-    IN pagerLimit int)
+    create procedure get_statistic_new (
+        in matchYear char(4),
+        in matchTournament int,
+        in orderBy char(20),
+        in orderSort char(4), 
+        in pagerOffer int,
+        in pagerLimit int
+    )
     begin
         set @query = CONCAT('
             select 
             m.rival_name as rivalName,
             count(
-            CASE 
-                    WHEN m.rival_score > m.score THEN  m.id 
-                END) as lostMatches,
+            case 
+                    when m.rival_score > m.score then  m.id 
+                end) as lostMatches,
             sum(m.rival_score) as rivalScore,
             sum(m.score) as score
             from matches_new m
