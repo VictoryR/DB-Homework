@@ -21,3 +21,9 @@
     SELECT p.PARTITION_NAME, p.TABLE_ROWS FROM INFORMATION_SCHEMA.PARTITIONS p WHERE TABLE_NAME = 'trainings';
 
 ![trainings_count](images/11_1_3.png)
+
+Проверим, что все верно
+
+    SELECT * FROM trainings PARTITION (p3);
+
+![trainings_count](images/11_1_4.png)
