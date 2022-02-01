@@ -22,7 +22,7 @@
 
 ![trainings_count](images/11_1_3.png)
 
-Проверим, что все верно
+Проверим, что все верно, в партиции p3 записи 2022 года
 
     SELECT * FROM trainings PARTITION (p3);
 
