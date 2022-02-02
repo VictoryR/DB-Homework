@@ -1,8 +1,6 @@
 1. Создаем процедуру addTraining
-
-
-   test
-   
+    
+test
 
     DELIMITER $$
     CREATE PROCEDURE addTraining ( trainingDate date, fieldId int)
@@ -14,7 +12,6 @@
         DEClARE curPlayer 
 		    CURSOR FOR 
                 SELECT id FROM temp_pl_on_trainings; -- временная таблица с id игроков, создается заранее
-	
         DEClARE curTrainer 
             CURSOR FOR 
                 SELECT id FROM temp_tr_on_trainings; -- временная таблица с id тренеров, создается заранее
@@ -53,12 +50,10 @@
                 INSERT INTO trainers_on_trainings (training_id, trainer_id)
                     VALUES (@trainingId, trainerId);
             END LOOP getTrainer;
-            CLOSE curTrainer;
-        
+            CLOSE curTrainer; 
         COMMIT;
     END$$
     DELIMITER ;
-    
     -- вызываем процедуру
     call addTraining('2022-02-09', 1);
     
