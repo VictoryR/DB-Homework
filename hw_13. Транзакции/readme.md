@@ -8,7 +8,6 @@
         DECLARE finished INTEGER DEFAULT 0;
         DECLARE playerId int DEFAULT 0;
         DECLARE trainerId int DEFAULT 0;
-        
         DEClARE curPlayer 
 		    CURSOR FOR 
                 SELECT id FROM temp_pl_on_trainings; -- временная таблица с id игроков, создается заранее
@@ -54,7 +53,6 @@
             CLOSE curTrainer;
         
         COMMIT;
-    
     END$$
     DELIMITER ;
 
