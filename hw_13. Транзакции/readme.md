@@ -1,6 +1,9 @@
 1. Создаем процедуру addTraining
 
 
+   test
+   
+
     DELIMITER $$
     CREATE PROCEDURE addTraining ( trainingDate date, fieldId int)
     BEGIN
@@ -55,10 +58,10 @@
         COMMIT;
     END$$
     DELIMITER ;
-
+    
     -- вызываем процедуру
     call addTraining('2022-02-09', 1);
-
+    
 
 2. Создаем таблицу load_data для загрузки данных из файла. Загружаем данные
 
