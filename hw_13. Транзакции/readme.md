@@ -1,4 +1,4 @@
-Создаем процедуру addTraining
+**Создаем процедуру addTraining**
 
 
     DELIMITER $$
@@ -57,7 +57,7 @@
     call addTraining('2022-02-09', 1);
     
 
-Создаем таблицу load_data для загрузки данных из файла. Загружаем данные
+**Создаем таблицу load_data для загрузки данных из файла. Загружаем данные**
 
 
     LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\Bicycles.csv' 
