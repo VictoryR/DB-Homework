@@ -1,6 +1,5 @@
 1. Создаем процедуру addTraining
-    
-test
+
 
     DELIMITER $$
     CREATE PROCEDURE addTraining ( trainingDate date, fieldId int)
@@ -66,6 +65,7 @@ test
         FIELDS TERMINATED BY ',' ENCLOSED BY '"'
         LINES TERMINATED BY '\n'
         IGNORE 1 LINES;
+
 
 Посмотрим число записей в таблице
 
