@@ -74,4 +74,12 @@
 И сами записи в таблице
 
 ![load_data](images/13_2.png)
-       
+
+
+**mysqlimport **
+
+    mysqlimport -u root -p --local --fields-terminated-by="," --fields-enclosed-by='"' --lines-terminated-by='\n' --ignore-lines=1 testtest load_data.csv;
+
+![load_data](images/13_3.jpg)
+
+![load_data](images/13_4.jpg)
