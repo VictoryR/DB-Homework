@@ -76,7 +76,8 @@
 ![load_data](images/13_2.png)
 
 
-**mysqlimport **
+**mysqlimport**
+
 
     mysqlimport -u root -p --local --fields-terminated-by="," --fields-enclosed-by='"' --lines-terminated-by='\n' --ignore-lines=1 testtest load_data.csv;
 
