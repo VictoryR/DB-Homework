@@ -23,11 +23,11 @@
 
 ![fill_db](images/18_fill_db.jpg)
 
-Проверям базу world_test
+Проверям восстановление базы world_test
 
 ![show_tables_world_test](images/18_show_tables_world_test.jpg)
 
-Смотрим таблицу city и открепляем ее от tablespace
+Смотрим таблицу city и открепляем tablespace
 
 ![desc_city_discard](images/18_desc_city_discard.jpg)
 
@@ -35,11 +35,13 @@
 
 ![copy_city](images/18_copy_city.jpg)
 
-Прикрепляем таблицу к tablespacе
-
+Добавляем tablespacе
 
 ![import_tablespace](images/18_import_tablespace.jpg)
 
 Делаем выборку из таблицы city
 
 ![answer](images/18_answer.jpg)
+
+Ответ **189**
+
