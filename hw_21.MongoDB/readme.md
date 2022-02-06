@@ -56,3 +56,88 @@
 
 ![docker_mongo](images/21_after_update.png)
 
+
+Для использования индексов создаем тестовую коллекцию test_users. Заполняем данными
+Создаем текстовый индекс на поле last_name
+
+    db.test_users.createIndex({"last_name": "text"}, {"name" : "last name index"});
+
+Выборака без индекса
+
+    > db.test_users.find({"last_name": "Kent"}).explain("executionStats");
+    {
+        "explainVersion" : "1",
+        "queryPlanner" : {
+            "namespace" : "otus_new.test_users",
+            "indexFilterSet" : false,
+            "parsedQuery" : {
+                "last_name" : {
+                    "$eq" : "Kent"
+                }
+            },
+            "maxIndexedOrSolutionsReached" : false,
+            "maxIndexedAndSolutionsReached" : false,
+            "maxScansToExplodeReached" : false,
+            "winningPlan" : {
+                "stage" : "COLLSCAN",
+                "filter" : {
+                    "last_name" : {
+                        "$eq" : "Kent"
+                    }
+                },
+                "direction" : "forward"
+            },
+            "rejectedPlans" : [ ]
+        },
+        "executionStats" : {
+            "executionSuccess" : true,
+            "nReturned" : 2,
+            "executionTimeMillis" : 9,
+            "totalKeysExamined" : 0,
+            "totalDocsExamined" : 2976,
+            "executionStages" : {
+                "stage" : "COLLSCAN",
+                "filter" : {
+                    "last_name" : {
+                        "$eq" : "Kent"
+                    }
+                },
+                "nReturned" : 2,
+                "executionTimeMillisEstimate" : 0,
+                "works" : 2978,
+                "advanced" : 2,
+                "needTime" : 2975,
+                "needYield" : 0,
+                "saveState" : 2,
+                "restoreState" : 2,
+                "isEOF" : 1,
+                "direction" : "forward",
+                "docsExamined" : 2976
+            }
+        },
+        "command" : {
+            "find" : "test_users",
+            "filter" : {
+                "last_name" : "Kent"
+            },
+            "$db" : "otus_new"
+        },
+        "serverInfo" : {
+            "host" : "14cbaa7bd977",
+            "port" : 27017,
+            "version" : "5.0.6",
+            "gitVersion" : "212a8dbb47f07427dae194a9c75baec1d81d9259"
+        },
+        "serverParameters" : {
+            "internalQueryFacetBufferSizeBytes" : 104857600,
+            "internalQueryFacetMaxOutputDocSizeBytes" : 104857600,
+            "internalLookupStageIntermediateDocumentMaxSizeBytes" : 104857600,
+            "internalDocumentSourceGroupMaxMemoryBytes" : 104857600,
+            "internalQueryMaxBlockingSortMemoryUsageBytes" : 104857600,
+            "internalQueryProhibitBlockingMergeOnMongoS" : 0,
+            "internalQueryMaxAddToSetBytes" : 104857600,
+            "internalDocumentSourceSetWindowFieldsMaxMemoryBytes" : 104857600
+        },
+        "ok" : 1
+    }
+    > 
