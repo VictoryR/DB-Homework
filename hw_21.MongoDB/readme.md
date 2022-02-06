@@ -117,9 +117,9 @@
         "executionStats" : {
             "executionSuccess" : true,
             "nReturned" : 2,
-            `"executionTimeMillis" : 9,`
+            "executionTimeMillis" : 9,
             "totalKeysExamined" : 0,
-            `"totalDocsExamined" : 2976,`
+            "totalDocsExamined" : 2976,
             "executionStages" : {
                 "stage" : "COLLSCAN",
                 "filter" : {
@@ -217,9 +217,9 @@
         "executionStats" : {
             "executionSuccess" : true,
             "nReturned" : 2,
-            `"executionTimeMillis" : 0,`
+            "executionTimeMillis" : 0,
             "totalKeysExamined" : 2,
-            `"totalDocsExamined" : 2,`
+            "totalDocsExamined" : 2,
             "executionStages" : {
                 "stage" : "TEXT_MATCH",
                 "nReturned" : 2,
