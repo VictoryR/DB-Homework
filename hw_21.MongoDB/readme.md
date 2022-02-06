@@ -58,11 +58,36 @@
 
 
 Для использования индексов создаем тестовую коллекцию test_users. Заполняем данными
-Создаем текстовый индекс на поле last_name
+Создаем текстовый индекс на поле last_name, проверяем индексы
 
     db.test_users.createIndex({"last_name": "text"}, {"name" : "last name index"});
+    db.test_users.getIndexes();
+    [
+        {
+            "v" : 2,
+            "key" : {
+                "_id" : 1
+            },
+            "name" : "_id_"
+        },
+        {
+            "v" : 2,
+            "key" : {
+                "_fts" : "text",
+                "_ftsx" : 1
+            },
+            "name" : "last_name_index",
+            "weights" : {
+                "last_name" : 1
+            },
+            "default_language" : "english",
+            "language_override" : "language",
+            "textIndexVersion" : 3
+        }
+    ]
 
-Выборака без индекса
+
+Выборка без индекса
 
     > db.test_users.find({"last_name": "Kent"}).explain("executionStats");
     {
@@ -92,9 +117,9 @@
         "executionStats" : {
             "executionSuccess" : true,
             "nReturned" : 2,
-            "executionTimeMillis" : 9,
+            `"executionTimeMillis" : 9,`
             "totalKeysExamined" : 0,
-            "totalDocsExamined" : 2976,
+            `"totalDocsExamined" : 2976,`
             "executionStages" : {
                 "stage" : "COLLSCAN",
                 "filter" : {
@@ -123,20 +148,163 @@
             "$db" : "otus_new"
         },
         "serverInfo" : {
-            "host" : "14cbaa7bd977",
-            "port" : 27017,
-            "version" : "5.0.6",
-            "gitVersion" : "212a8dbb47f07427dae194a9c75baec1d81d9259"
+            ...
         },
         "serverParameters" : {
-            "internalQueryFacetBufferSizeBytes" : 104857600,
-            "internalQueryFacetMaxOutputDocSizeBytes" : 104857600,
-            "internalLookupStageIntermediateDocumentMaxSizeBytes" : 104857600,
-            "internalDocumentSourceGroupMaxMemoryBytes" : 104857600,
-            "internalQueryMaxBlockingSortMemoryUsageBytes" : 104857600,
-            "internalQueryProhibitBlockingMergeOnMongoS" : 0,
-            "internalQueryMaxAddToSetBytes" : 104857600,
-            "internalDocumentSourceSetWindowFieldsMaxMemoryBytes" : 104857600
+            ...
+        },
+        "ok" : 1
+    }
+    > 
+
+Выборка с индексом
+
+    > db.test_users.find({$text: {$search: "Kent"}}).explain("executionStats");
+    {
+        "explainVersion" : "1",
+        "queryPlanner" : {
+            "namespace" : "otus_new.test_users",
+            "indexFilterSet" : false,
+            "parsedQuery" : {
+                "$text" : {
+                    "$search" : "Kent",
+                    "$language" : "english",
+                    "$caseSensitive" : false,
+                    "$diacriticSensitive" : false
+                }
+            },
+            "maxIndexedOrSolutionsReached" : false,
+            "maxIndexedAndSolutionsReached" : false,
+            "maxScansToExplodeReached" : false,
+            "winningPlan" : {
+                "stage" : "TEXT_MATCH",
+                "indexPrefix" : {
+
+                },
+                "indexName" : "last_name_index",
+                "parsedTextQuery" : {
+                    "terms" : [
+                        "kent"
+                    ],
+                    "negatedTerms" : [ ],
+                    "phrases" : [ ],
+                    "negatedPhrases" : [ ]
+                },
+                "textIndexVersion" : 3,
+                "inputStage" : {
+                    "stage" : "FETCH",
+                    "inputStage" : {
+                        "stage" : "IXSCAN",
+                        "keyPattern" : {
+                            "_fts" : "text",
+                            "_ftsx" : 1
+                        },
+                        "indexName" : "last_name_index",
+                        "isMultiKey" : false,
+                        "isUnique" : false,
+                        "isSparse" : false,
+                        "isPartial" : false,
+                        "indexVersion" : 2,
+                        "direction" : "backward",
+                        "indexBounds" : {
+
+                        }
+                    }
+                }
+            },
+            "rejectedPlans" : [ ]
+        },
+        "executionStats" : {
+            "executionSuccess" : true,
+            "nReturned" : 2,
+            `"executionTimeMillis" : 0,`
+            "totalKeysExamined" : 2,
+            `"totalDocsExamined" : 2,`
+            "executionStages" : {
+                "stage" : "TEXT_MATCH",
+                "nReturned" : 2,
+                "executionTimeMillisEstimate" : 0,
+                "works" : 3,
+                "advanced" : 2,
+                "needTime" : 0,
+                "needYield" : 0,
+                "saveState" : 0,
+                "restoreState" : 0,
+                "isEOF" : 1,
+                "indexPrefix" : {
+
+                },
+                "indexName" : "last_name_index",
+                "parsedTextQuery" : {
+                    "terms" : [
+                        "kent"
+                    ],
+                    "negatedTerms" : [ ],
+                    "phrases" : [ ],
+                    "negatedPhrases" : [ ]
+                },
+                "textIndexVersion" : 3,
+                "docsRejected" : 0,
+                "inputStage" : {
+                    "stage" : "FETCH",
+                    "nReturned" : 2,
+                    "executionTimeMillisEstimate" : 0,
+                    "works" : 3,
+                    "advanced" : 2,
+                    "needTime" : 0,
+                    "needYield" : 0,
+                    "saveState" : 0,
+                    "restoreState" : 0,
+                    "isEOF" : 1,
+                    "docsExamined" : 2,
+                    "alreadyHasObj" : 0,
+                    "inputStage" : {
+                        "stage" : "IXSCAN",
+                        "nReturned" : 2,
+                        "executionTimeMillisEstimate" : 0,
+                        "works" : 3,
+                        "advanced" : 2,
+                        "needTime" : 0,
+                        "needYield" : 0,
+                        "saveState" : 0,
+                        "restoreState" : 0,
+                        "isEOF" : 1,
+                        "keyPattern" : {
+                            "_fts" : "text",
+                            "_ftsx" : 1
+                        },
+                        "indexName" : "last_name_index",
+                        "isMultiKey" : false,
+                        "isUnique" : false,
+                        "isSparse" : false,
+                        "isPartial" : false,
+                        "indexVersion" : 2,
+                        "direction" : "backward",
+                        "indexBounds" : {
+
+                        },
+                        "keysExamined" : 2,
+                        "seeks" : 1,
+                        "dupsTested" : 0,
+                        "dupsDropped" : 0
+                    }
+                }
+            }
+        },
+        "command" : {
+            "find" : "test_users",
+            "filter" : {
+                "$text" : {
+                    "$search" : "Kent"
+                }
+            },
+            "$db" : "otus_new"
+        },
+        "serverInfo" : {
+            ...
+        },
+        "serverParameters" : {
+            ...
         },
         "ok" : 1
     }
